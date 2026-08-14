@@ -1,28 +1,30 @@
 const jwt = require('jsonwebtoken');
-const User =  require('../models/User');
+const User = require('../models/User');
 
-const protect = async(req,res,next) => {
-    let token;
+const protect = async (req, res, next) => {
+  let token;
 
-    if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
-        try{
-            token = req.headers.authorization.split(' ')[1];
-            
-            const decoded = jwt.verify(token,process.env.JWT_SECRET);
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    try {
+      token = req.headers.authorization.split(' ')[1];
 
-            req.user = await User.findById(decoded.id).select('-password');
-            next()
+      // Puthu Check: Token string "undefined" nu iruntha udane reject panniudu
+      if (token === 'undefined' || token === 'null') {
+        return res.status(401).json({ message: 'Not authorized, invalid token format' });
+      }
 
-        }catch(err){
-            console.error(err)
-            res.status(401).json({message:'Not authorized, token failed'});
-
-        }
+      // Token-a verify pandrom
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      req.user = await User.findById(decoded.id).select('-password');
+      
+      next();
+    } catch (error) {
+      console.error(error);
+      return res.status(401).json({ message: 'Not authorized, token failed' });
     }
-
-    if(!token){
-        res.status(401).json({message:'Not authorized, no token'});
-    }
+  } else {
+    return res.status(401).json({ message: 'Not authorized, no token' });
+  }
 };
 
-module.exports = {protect};
+module.exports = { protect };

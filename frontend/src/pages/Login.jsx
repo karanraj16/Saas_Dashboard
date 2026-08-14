@@ -39,6 +39,7 @@ const Login = () => {
     
         localStorage.setItem('token', data.token);
         console.log("Login Success! Token saved.");
+        console.log("backend respond",data);
         
         navigate('/dashboard');
       } else {

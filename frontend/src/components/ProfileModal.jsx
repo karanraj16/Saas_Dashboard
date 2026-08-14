@@ -1,49 +1,83 @@
-const ProfileModal = ({ userData, setShowProfile, handleLogout, totalClients, totalRevenue }) => {
+import React, { useState, useRef } from 'react';
+import { uploadProfilePhoto, createCheckout } from '../services/api';
+
+const ProfileModal = ({ userData, setUserData, setShowProfile, handleLogout, totalClients, totalRevenue }) => {
+  const [uploading, setUploading] = useState(false);
+  const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
+  const fileInputRef = useRef(null); 
+
+  const handlePhotoChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    try {
+      setUploading(true);
+      const updatedUser = await uploadProfilePhoto(file);
+      setUserData(updatedUser); 
+    } catch (error) {
+      alert("Failed to upload photo.");
+    } finally {
+      setUploading(false);
+    }
+  };
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 backdrop-blur-sm transition-opacity">
-      <div className="bg-white rounded-2xl p-8 w-96 shadow-2xl relative animate-fade-in-up">
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 50 }}>
+      <div style={{ background: 'var(--surface-1)', borderRadius: '16px', padding: '32px', width: '400px', position: 'relative', border: '1px solid var(--border)', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)' }}>
         
-        <button 
-          onClick={() => setShowProfile(false)} 
-          className="absolute top-4 right-4 text-gray-400 hover:text-red-500 font-extrabold text-xl transition"
-        >
-          ✕
-        </button>
+        <button onClick={() => setShowProfile(false)} style={{ position: 'absolute', top: '16px', right: '16px', background: 'transparent', border: 'none', color: 'var(--text-secondary)', fontSize: '20px', cursor: 'pointer', fontWeight: 'bold' }}>✕</button>
         
-        <div className="flex flex-col items-center">
-          <div className="w-24 h-24 bg-gradient-to-tr from-blue-600 to-blue-400 rounded-full flex items-center justify-center text-white font-bold text-4xl shadow-lg mb-4 border-4 border-white">
-            {userData.name ? userData.name.charAt(0).toUpperCase() : 'U'}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          {/* Avatar Section */}
+          <div style={{ position: 'relative', cursor: 'pointer', marginBottom: '16px' }} onClick={() => fileInputRef.current.click()}>
+            <div style={{ width: '96px', height: '96px', borderRadius: '50%', background: 'var(--fill-accent)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '36px', fontWeight: 'bold', overflow: 'hidden', border: '4px solid var(--surface-0)' }}>
+              {userData.profilePic ? (
+                <img src={userData.profilePic} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              ) : (
+                userData.name ? userData.name.charAt(0).toUpperCase() : 'U'
+              )}
+            </div>
+            <input type="file" ref={fileInputRef} onChange={handlePhotoChange} accept="image/*" style={{ display: 'none' }} />
           </div>
           
-          <h2 className="text-2xl font-bold text-gray-800">{userData.name}</h2>
-          <p className="text-gray-500 mb-6 font-medium">{userData.email}</p>
+          <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: 'var(--text-primary)', margin: '0 0 4px 0' }}>{userData.name}</h2>
+          <p style={{ color: 'var(--text-secondary)', margin: '0 0 24px 0' }}>{userData.email}</p>
           
-          <div className="w-full bg-blue-50 rounded-xl p-5 mb-6 border border-blue-100 shadow-inner">
-            <div className="flex justify-between items-center mb-3">
-              <span className="text-gray-600 font-bold text-sm uppercase tracking-wide">Plan</span>
-              <span className="bg-blue-600 text-white text-xs font-extrabold px-3 py-1 rounded-full shadow-sm">PRO 🚀</span>
+          {/* Stats Box */}
+          <div style={{ width: '100%', background: 'var(--surface-2)', borderRadius: '12px', padding: '20px', marginBottom: '24px', border: '1px solid var(--border)' }}>
+            
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '16px', borderBottom: '1px solid var(--border)', marginBottom: '16px' }}>
+              <span style={{ color: 'var(--text-secondary)', fontWeight: 'bold', fontSize: '14px', textTransform: 'uppercase' }}>Plan</span>
+              <button 
+                onClick={async () => {
+                  try {
+                    setIsCheckoutLoading(true);
+                    const data = await createCheckout();
+                    window.location.href = data.url; 
+                  } catch (error) {
+                    alert("Failed to load payment gateway.");
+                    setIsCheckoutLoading(false);
+                  }
+                }}
+                disabled={isCheckoutLoading}
+                style={{ background: 'var(--fill-accent)', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '20px', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer' }}
+              >
+                {isCheckoutLoading ? "Loading..." : "Upgrade to PRO 🚀"}
+              </button>
             </div>
-            <div className="flex justify-between items-center mb-3">
-              <span className="text-gray-600 font-bold text-sm uppercase tracking-wide">Clients</span>
-              <span className="font-extrabold text-gray-800 text-lg">{totalClients}</span>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+              <span style={{ color: 'var(--text-secondary)', fontWeight: 'bold', fontSize: '14px' }}>Total Clients</span>
+              <span style={{ color: 'var(--text-primary)', fontWeight: 'bold', fontSize: '16px' }}>{totalClients}</span>
             </div>
-            <div className="flex justify-between items-center border-t border-blue-200 pt-3 mt-1">
-              <span className="text-gray-600 font-bold text-sm uppercase tracking-wide">Revenue</span>
-              <span className="font-extrabold text-green-600 text-xl">${totalRevenue.toLocaleString()}</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span style={{ color: 'var(--text-secondary)', fontWeight: 'bold', fontSize: '14px' }}>Revenue</span>
+              <span style={{ color: 'var(--text-success)', fontWeight: 'bold', fontSize: '16px' }}>${totalRevenue.toLocaleString()}</span>
             </div>
           </div>
           
-          <div className="w-full space-y-3">
-            <button 
-              onClick={() => { alert("Edit Profile Coming Soon!"); setShowProfile(false); }} 
-              className="w-full bg-gray-100 text-gray-700 font-bold py-3 rounded-lg hover:bg-gray-200 transition"
-            >
-              Edit Profile
-            </button>
-            <button onClick={handleLogout} className="w-full bg-red-50 text-red-600 font-bold py-3 rounded-lg hover:bg-red-100 transition border border-red-100">
-              Sign Out Securely
-            </button>
-          </div>
+          <button onClick={handleLogout} style={{ width: '100%', padding: '12px', background: 'var(--bg-warning)', color: 'var(--text-warning)', border: '1px solid var(--text-warning)', borderRadius: 'var(--radius)', fontWeight: 'bold', cursor: 'pointer' }}>
+            Sign Out
+          </button>
         </div>
       </div>
     </div>

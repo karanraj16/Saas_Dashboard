@@ -1,40 +1,52 @@
+import React from 'react';
+
 const Sidebar = ({ userData, setShowProfile, handleLogout, exportToCSV, copyPublicLink }) => {
   return (
-    <aside className="w-64 bg-white shadow-xl hidden md:flex flex-col justify-between">
-      <div>
-        <div className="p-6 border-b border-gray-100">
-          <h1 className="text-2xl font-extrabold text-blue-600">SaaS Dash 🚀</h1>
+    <aside style={{ width: '240px', background: 'var(--surface-1)', borderRight: '0.5px solid var(--border)', display: 'flex', flexDirection: 'column', transition: 'all 0.3s' }}>
+      
+      {/* Brand */}
+      <div style={{ padding: '24px', borderBottom: '0.5px solid var(--border)' }}>
+        <h1 style={{ fontSize: '24px', fontWeight: 800, color: 'var(--text-accent)', margin: 0 }}>SaaS Dash 🚀</h1>
+      </div>
+      
+      {/* User Mini Profile */}
+      <div 
+        onClick={() => setShowProfile(true)}
+        style={{ padding: '16px 24px', borderBottom: '0.5px solid var(--border)', background: 'var(--surface-2)', display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}
+        className="hover:opacity-80 transition"
+      >
+        <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--fill-accent)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '18px', overflow: 'hidden' }}>
+          {userData.profilePic ? (
+            <img src={userData.profilePic} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          ) : (
+            userData.name ? userData.name.charAt(0).toUpperCase() : 'U'
+          )}
         </div>
-        
-        <div 
-          onClick={() => setShowProfile(true)}
-          className="p-6 border-b border-gray-100 bg-gray-50 flex items-center gap-4 cursor-pointer hover:bg-gray-100 transition group"
-        >
-          <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-inner group-hover:scale-105 transition-transform">
-            {userData.name ? userData.name.charAt(0).toUpperCase() : 'U'}
-          </div>
-          <div className="overflow-hidden flex-1">
-            <p className="text-sm font-bold text-gray-800 truncate">{userData.name || 'Loading...'}</p>
-            <p className="text-xs text-gray-500 truncate">{userData.email || '...'}</p>
-          </div>
-          <div className="text-gray-400 font-bold">⚙️</div>
+        <div style={{ flex: 1, overflow: 'hidden' }}>
+          <p style={{ fontSize: '14px', fontWeight: 'bold', color: 'var(--text-primary)', margin: 0, whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
+            {userData.name || 'Loading...'}
+          </p>
+          <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: 0 }}>Pro Plan</p>
         </div>
-
-        <div className="p-4 space-y-3">
-          <button className="w-full flex items-center gap-3 bg-blue-50 text-blue-600 font-bold px-4 py-3 rounded-lg">
-            <span className="text-lg">📊</span> Overview
-          </button>
-          <button onClick={copyPublicLink} className="w-full flex items-center gap-3 text-gray-600 hover:bg-gray-100 hover:text-gray-900 font-semibold px-4 py-3 rounded-lg transition">
-            <span className="text-lg">🔗</span> Public Link
-          </button>
-          <button onClick={exportToCSV} className="w-full flex items-center gap-3 text-gray-600 hover:bg-gray-100 hover:text-gray-900 font-semibold px-4 py-3 rounded-lg transition">
-            <span className="text-lg">📥</span> Export CSV
-          </button>
-        </div>
+        <div style={{ color: 'var(--text-secondary)' }}>⚙️</div>
       </div>
 
-      <div className="p-4 border-t border-gray-100">
-        <button onClick={handleLogout} className="w-full flex items-center justify-center gap-2 bg-red-50 text-red-600 font-bold py-3 px-4 rounded-lg hover:bg-red-100 transition">
+      {/* Navigation */}
+      <nav style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
+        <button style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', borderRadius: 'var(--radius)', background: 'var(--bg-accent)', color: 'var(--text-accent)', border: 'none', fontWeight: 'bold', cursor: 'pointer' }}>
+          <span style={{ fontSize: '18px' }}>📊</span> Overview
+        </button>
+        <button onClick={copyPublicLink} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', borderRadius: 'var(--radius)', background: 'transparent', color: 'var(--text-secondary)', border: 'none', fontWeight: 600, cursor: 'pointer' }}>
+          <span style={{ fontSize: '18px' }}>🔗</span> Public Link
+        </button>
+        <button onClick={exportToCSV} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', borderRadius: 'var(--radius)', background: 'transparent', color: 'var(--text-secondary)', border: 'none', fontWeight: 600, cursor: 'pointer' }}>
+          <span style={{ fontSize: '18px' }}>📥</span> Export CSV
+        </button>
+      </nav>
+
+      {/* Logout */}
+      <div style={{ padding: '16px', borderTop: '0.5px solid var(--border)' }}>
+        <button onClick={handleLogout} style={{ width: '100%', padding: '12px', borderRadius: 'var(--radius)', background: 'var(--bg-warning)', color: 'var(--text-warning)', border: 'none', fontWeight: 'bold', cursor: 'pointer' }}>
           Sign Out
         </button>
       </div>

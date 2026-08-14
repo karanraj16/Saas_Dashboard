@@ -1,38 +1,65 @@
+import React from 'react';
+
 const TransactionTable = ({ transactions, handleDelete }) => {
+  
+  const getStatusStyle = (status) => {
+    switch(status?.toLowerCase()) {
+      case 'pending':
+      case 'waiting':
+        return { bg: 'var(--bg-warning)', text: 'var(--text-warning)' };
+      case 'failed':
+      case 'cancelled':
+        return { bg: '#fee2e2', text: '#ef4444' }; // Red shades
+      default:
+        return { bg: 'var(--bg-success)', text: 'var(--text-success)' };
+    }
+  };
+
   return (
-    <div className="bg-white shadow-md rounded-xl overflow-hidden border border-gray-100">
-      <table className="min-w-full">
-        <thead className="bg-gray-50 border-b border-gray-100">
-          <tr>
-            <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Client Name</th>
-            <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Amount</th>
-            <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Status</th>
-            <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Action</th>
+    <div style={{ overflowX: 'auto' }}>
+      <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+        <thead>
+          <tr style={{ borderBottom: '1px solid var(--border)', color: 'var(--text-secondary)', fontSize: '13px' }}>
+            <th style={{ padding: '12px 0', fontWeight: 500 }}>Transaction ID</th>
+            <th style={{ padding: '12px 0', fontWeight: 500 }}>Date</th>
+            <th style={{ padding: '12px 0', fontWeight: 500 }}>Amount</th>
+            <th style={{ padding: '12px 0', fontWeight: 500 }}>Status</th>
+            <th style={{ padding: '12px 0', fontWeight: 500 }}>Action</th> {/* 🚀 Delete Column */}
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-100 bg-white">
-          {transactions.length > 0 ? (
-            transactions.map((transaction) => (
-              <tr key={transaction._id} className="hover:bg-gray-50 transition">
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-800">{transaction.user}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-600">${transaction.amount}</td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full ${
-                    transaction.status === 'Completed' ? 'bg-green-100 text-green-700' : 
-                    transaction.status === 'Pending' ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'
-                  }`}>
-                    {transaction.status}
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  <button onClick={() => handleDelete(transaction._id)} className="text-red-500 hover:text-red-700 font-bold transition">
-                    🗑️ Delete
-                  </button>
-                </td>
-              </tr>
-            ))
+        <tbody>
+          {transactions && transactions.length > 0 ? (
+            transactions.map((txn) => {
+              const statusStyle = getStatusStyle(txn.status);
+              return (
+                <tr key={txn._id || Math.random()} style={{ borderBottom: '1px solid var(--border)', color: 'var(--text-primary)', fontSize: '14px' }}>
+                  <td style={{ padding: '12px 0' }}>{txn._id ? txn._id.substring(0, 8) + '...' : 'N/A'}</td>
+                  <td style={{ padding: '12px 0', color: 'var(--text-secondary)' }}>
+                    {new Date(txn.date || txn.createdAt || Date.now()).toLocaleDateString()}
+                  </td>
+                  <td style={{ padding: '12px 0', fontWeight: 500 }}>
+                    ${txn.amount ? txn.amount.toLocaleString() : '0'}
+                  </td>
+                  <td style={{ padding: '12px 0' }}>
+                    <span style={{ padding: '4px 8px', borderRadius: '4px', fontSize: '12px', fontWeight: 500, background: statusStyle.bg, color: statusStyle.text }}>
+                      {txn.status || 'Completed'}
+                    </span>
+                  </td>
+                  <td style={{ padding: '12px 0' }}>
+                    {/* 🚀 Delete Button */}
+                    <button onClick={() => handleDelete(txn._id)} style={{ color: '#ef4444', background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '16px', fontWeight: 'bold' }}>
+                      🗑️
+                    </button>
+                  </td>
+                </tr>
+              );
+            })
           ) : (
-            <tr><td colSpan="4" className="px-6 py-8 text-center text-gray-400 font-medium">No transactions found. Add your first data!</td></tr>
+            <tr>
+              <td colSpan="5" style={{ padding: '24px 0', textAlign: 'center', color: 'var(--text-secondary)' }}>
+                No transactions found.
+              </td>
+            </tr>
           )}
         </tbody>
       </table>

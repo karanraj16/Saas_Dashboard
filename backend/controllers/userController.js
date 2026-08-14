@@ -20,6 +20,10 @@ const registerUser = async (req, res) => {
         });
 
         if (user) {
+            const token = jwt.sign({id : user._id} , process.env.JWT_SECRET ,{
+                expiresIn :'30d'
+            });
+            
             res.status(201).json({
                 _id: user.id,
                 name: user.name,
@@ -71,4 +75,24 @@ const getUserProfile = async (req, res) => {
 
     res.status(200).json(user);
 };
-module.exports = { registerUser , loginUser ,getUserProfile };
+
+const updateProfilePhoto = async (req, res) => {
+    try {
+        
+        if (!req.file) {
+            return res.status(400).json({ message: 'No image uploaded' });
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(
+            req.user._id,
+            { profilePic: req.file.path },
+            { new: true }
+        ).select('-password'); 
+
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+module.exports = { registerUser , loginUser ,getUserProfile , updateProfilePhoto };

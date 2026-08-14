@@ -1,3 +1,40 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --surface-0: #f8fafc;
+  --surface-1: #ffffff;
+  --surface-2: #ffffff;
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
+  --border: #e2e8f0;
+  --border-accent: #818cf8;
+  --text-accent: #4f46e5;
+  --bg-accent: #e0e7ff;
+  --bg-success: #dcfce7;
+  --text-success: #15803d;
+  --fill-success: #22c55e;
+  --bg-warning: #fef9c3;
+  --text-warning: #a16207;
+  --fill-warning: #eab308;
+  --fill-accent: #4f46e5;
+  --radius: 8px;
+}
+
+/* Dark Mode Variables */
+.dark {
+  --surface-0: #0f172a;
+  --surface-1: #1e293b;
+  --surface-2: #1e293b;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --border: #334155;
+  --border-accent: #6366f1;
+  --text-accent: #818cf8;
+  --bg-accent: #312e81;
+  --bg-success: #064e3b;
+  --text-success: #34d399;
+  --bg-warning: #713f12;
+  --text-warning: #facc15;
+}

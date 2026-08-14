@@ -11,12 +11,12 @@ const getTransactions = async(req,res) => {
 
 const addTransaction = async(req,res) => {
     try{
-        const { user, amount, status } = req.body;
+        const { user,description, amount, status } = req.body;
         const trans = await Transaction.create({
             adminId: req.user._id, 
-            user,
-            amount,
-            status
+            user : user || description || 'New Client',
+            amount :Number(amount),
+            status : status || 'completed'
         });
         res.status(201).json(trans);
     }catch(err){

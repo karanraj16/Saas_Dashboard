@@ -25,7 +25,7 @@ const Register = () => {
     setErrorMsg('');
 
     try {
-      // Backend-oda /register route-ku request anuppurom
+
       const response = await fetch('http://localhost:5000/api/users/register', {
         method: 'POST',
         headers: {
