@@ -33,11 +33,21 @@ const Dashboard = () => {
       return acc;
     }, {});
 
-    return Object.keys(grouped).map(key => ({
-      name: key,
-      value: grouped[key]
-    }));
+      let sortedData = Object.keys(grouped)
+        .map(key => ({name: key,
+        value: grouped[key]
+        }))
+        .sort((a,b) => b.value - a.value);
+
+      if(sortedData.length > 5){
+      const top5 = sortedData.slice(0, 5);
+      const othersValue = sortedData.slice(5).reduce((sum, item) => sum + item.value, 0);
+      top5.push({ name: 'Others', value: othersValue });
+      return top5;
+      }
+      return sortedData;
   };
+  
   const dynamicChartData = generateChartData(transactions);
 
   const handleExportCSV = () => {
@@ -284,9 +294,9 @@ const Dashboard = () => {
               <input type="text" name="description" placeholder="Description (e.g. Service)" required style={{ flex: 2, minWidth: '150px', padding: '10px 14px', borderRadius: 'var(--radius)', border: '1px solid var(--border)', background: 'var(--surface-1)', color: 'var(--text-primary)' }}/>
               
               <select name="status" style={{ flex: 1, minWidth: '120px', padding: '10px 14px', borderRadius: 'var(--radius)', border: '1px solid var(--border)', background: 'var(--surface-1)', color: 'var(--text-primary)' }}>
-                <option value="Completed">Completed</option>
-                <option value="Pending">Pending</option>
-                <option value="Failed">Failed</option>
+                <option value="Completed">✅Completed</option>
+                <option value="Pending">🔄Pending</option>
+                <option value="Failed">❌Failed</option>
               </select>
 
               <button type="submit" style={{ padding: '10px 20px', background: 'var(--fill-accent)', color: '#fff', border: 'none', borderRadius: 'var(--radius)', fontWeight: 'bold', cursor: 'pointer', whiteSpace: 'nowrap' }}>
