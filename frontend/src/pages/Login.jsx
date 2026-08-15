@@ -21,11 +21,10 @@ const Login = () => {
 
   const onSubmit = async (e) => {
     e.preventDefault(); 
-    setErrorMsg(''); // Pazhaya error-a thudachidrom
-
+    setErrorMsg(''); 
     try {
-      // 3. Namma Backend-ku POST request anuppurom
-      const response = await fetch('http://localhost:5000/api/users/login', {
+     
+      const response = await fetch('https://saas-dashboard-66rj.onrender.com/api/users/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
