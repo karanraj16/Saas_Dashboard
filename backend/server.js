@@ -9,7 +9,10 @@ connectDB();
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: ["https://saas-dashboard-green-xi.vercel.app", "http://localhost:5173"], 
+    credentials: true
+}));
 app.use(express.json());
 
 // 1. Basic Test Routes
