@@ -20,6 +20,7 @@ const Dashboard = () => {
   const [successMsg, setSuccessMsg] = useState('');
   const [showProfile, setShowProfile] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const COLORS = ['var(--fill-accent)', 'var(--fill-success)', 'var(--fill-warning)', 
     '#ef4444', '#8b5cf6', '#06b6d4', '#f97316', '#ec4899', '#14b8a6', '#6366f1'];
@@ -157,27 +158,50 @@ const Dashboard = () => {
   return (
     <div style={{ background: 'var(--surface-0)', fontFamily: 'sans-serif', display: 'flex', height: '100vh', overflow: 'hidden' }}>
       
-      {/* SIDEBAR */}
-      <Sidebar 
-        userData={userData} 
-        setShowProfile={setShowProfile} 
-        handleLogout={handleLogout} 
-        exportToCSV={handleExportCSV}
-        copyPublicLink={handleCopyLink}
-      />
+      {isSidebarOpen && (
+        <div 
+          className="lg:hidden" 
+          onClick={() => setIsSidebarOpen(false)} 
+          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 40 }}
+        />
+      )}
+
+      <div 
+        className={`lg:relative lg:translate-x-0 fixed inset-y-0 left-0 transform transition-transform duration-300 ease-in-out z-50 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        >
+        <Sidebar 
+          userData={userData} 
+          setShowProfile={setShowProfile} 
+          handleLogout={handleLogout} 
+          exportToCSV={handleExportCSV}
+          copyPublicLink={handleCopyLink}
+        />
+      </div>
 
       {/* MAIN CONTENT */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
         
         {/* TOP BAR */}
         <div style={{ background: 'var(--surface-2)', borderBottom: '0.5px solid var(--border)', padding: '16px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+         
+         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+
+            <button 
+              className="lg:hidden" 
+              onClick={() => setIsSidebarOpen(true)}
+              style={{ fontSize: '24px', background: 'transparent', border: 'none', color: 'var(--text-primary)', cursor: 'pointer' }}
+            >
+              ☰
+            </button>
+         
           <div>
             <h1 style={{ fontSize: '22px', fontWeight: 500, margin: 0, color: 'var(--text-primary)' }}>Welcome back, {userData.name} 👋</h1>
             <p style={{ fontSize: '13px', margin: '4px 0 0', color: 'var(--text-secondary)' }}>Here's your business performance this month</p>
           </div>
+         </div> 
           
           <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-            <select style={{ padding: '8px 12px', border: '0.5px solid var(--border)', borderRadius: 'var(--radius)', background: 'var(--surface-1)', color: 'var(--text-primary)', fontSize: '13px', cursor: 'pointer' }}>
+            <select className = 'hidden sm:block' style={{ padding: '8px 12px', border: '0.5px solid var(--border)', borderRadius: 'var(--radius)', background: 'var(--surface-1)', color: 'var(--text-primary)', fontSize: '13px', cursor: 'pointer' }}>
               <option>Last 30 days</option>
               <option>Last 90 days</option>
               <option>This year</option>
