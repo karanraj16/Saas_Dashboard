@@ -11,6 +11,7 @@ import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recha
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const isFirstTime = localStorage.getItem('isFirstTime') === 'true';
   
   // States
   const [userData, setUserData] = useState({});
@@ -195,7 +196,8 @@ const Dashboard = () => {
             </button>
          
           <div>
-            <h1 style={{ fontSize: '22px', fontWeight: 500, margin: 0, color: 'var(--text-primary)' }}>Welcome back, {userData.name} 👋</h1>
+            <h1 style={{ fontSize: '22px', fontWeight: 500, margin: 0, color: 'var(--text-primary)' }}>
+              {isFirstTime ? 'Welcome' : 'Welcome back'}, {userData.name} 👋</h1>
             <p style={{ fontSize: '13px', margin: '4px 0 0', color: 'var(--text-secondary)' }}>Here's your business performance this month</p>
           </div>
          </div> 

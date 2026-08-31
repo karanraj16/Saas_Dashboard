@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import {Link, useNavigate } from 'react-router-dom'; 
+import { Link, useNavigate } from 'react-router-dom'; 
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -23,7 +23,6 @@ const Login = () => {
     e.preventDefault(); 
     setErrorMsg(''); 
     try {
-     
       const response = await fetch('https://saas-dashboard-66rj.onrender.com/api/users/login', {
         method: 'POST',
         headers: {
@@ -35,10 +34,18 @@ const Login = () => {
       const data = await response.json();
 
       if (response.ok) {
-    
         localStorage.setItem('token', data.token);
-        console.log("Login Success! Token saved.");
-        console.log("backend respond",data);
+        localStorage.removeItem('isFirstTime');
+        console.log("backend respond", data);
+        
+        // 🚀 THE FIX: AI-ku thevaiyaana Data-va save pandrom
+        // Unga backend 'data' object-la irunthu exact values-a eduthu podunga
+        localStorage.setItem('user', JSON.stringify({
+            name: data.name || data.user?.name || "User", 
+            email: data.email || data.user?.email || formData.email,
+            plan: data.plan || data.user?.plan || "Free Tier", 
+            usersCount: data.usersCount || 1
+        }));
         
         navigate('/dashboard');
       } else {
@@ -57,7 +64,6 @@ const Login = () => {
           Welcome Back 👋
         </h2>
         
-
         {errorMsg && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
             {errorMsg}

@@ -3,20 +3,30 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 
+// 🚀 ChatWidget Import
+import ChatWidget from './components/ChatWidget'; 
+
 const App = () => {
   return (
     <Router>
-      <Routes>
-        {/* Auth Routes */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+      <div className="relative"> 
         
-        {/* Main Dashboard Route */}
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Routes>
+          {/* Auth Routes */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          
+          {/* Main Dashboard Route */}
+          <Route path="/dashboard" element={<Dashboard />} />
+          
+          <Route path="*" element={<Navigate to="/login" />} />
+        </Routes> 
         
-        <Route path="*" element={<Navigate to="/login" />} />
-      </Routes>
+        <ChatWidget />
+
+      </div>
     </Router>
   );
 };
+
 export default App;

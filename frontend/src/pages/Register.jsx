@@ -39,6 +39,8 @@ const Register = () => {
       if (response.ok) {
 
         localStorage.setItem('token', data.token);
+        localStorage.setItem('isFirstTime', 'true');
+        
         navigate('/dashboard');
       } else {
         setErrorMsg(data.message || 'Registration failed');
