@@ -4,7 +4,7 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 
 // 🚀 ChatWidget Import
-import ChatWidget from './components/ChatWidget'; 
+import ChatWidget from './component/ChatWidget'; 
 
 const App = () => {
   return (
