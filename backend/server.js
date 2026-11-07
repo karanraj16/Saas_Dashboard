@@ -10,7 +10,7 @@ connectDB();
 const app = express();
 
 app.use(cors({
-    origin: ["https://saas-dashboard-green-xi.vercel.app", "http://localhost:5173"], 
+    origin: '*', // (Ippa testing-ku ellam allow panrom, pinnaadi unoda Vercel URL mattum podalam)
     credentials: true
 }));
 app.use(express.json());
